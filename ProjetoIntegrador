@@ -1,0 +1,224 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.List;
+import java.time.format.DateTimeFormatter;
+
+class Aluno {
+    private String nome;
+    private String cpf;
+    private String endereco;
+    private LocalDate dataNascimento;
+    
+    public Aluno(String nome, String cpf, String endereco, String dataNascimento) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.endereco = endereco;
+        this.dataNascimento = LocalDate.parse(dataNascimento, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public int getIdade() {
+        LocalDate hoje = LocalDate.now();
+        Period periodo = Period.between(dataNascimento, hoje);
+        return periodo.getYears();
+    }
+
+    public String getDataNascimentoFormatada() {
+        return dataNascimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+}
+
+class ListaDeAlunos {
+    private ArrayList<Aluno> lista;
+
+    public ListaDeAlunos() {
+        lista = new ArrayList<>();
+    }
+
+    public void adicionarAluno(Aluno aluno) {
+        lista.add(aluno);
+    }
+
+    public void mostrarAlunosEmOrdemAlfabetica() {
+        Collections.sort(lista, Comparator.comparing(Aluno::getNome));
+
+        for (Aluno aluno : lista) {
+            System.out.println("Nome: " + aluno.getNome() + ", Idade: " + aluno.getIdade() + ", Data de Nascimento: " + aluno.getDataNascimentoFormatada());
+        }
+    }
+}
+
+class CadastroTurma {
+    private String codigoTurma;
+    private String etapaDeEnsino;
+    private int ano;
+    private int limiteVagas;
+    private int numMatriculados; 
+
+    public CadastroTurma(String codigoTurma, String etapaDeEnsino, int ano, int limiteVagas, int numMatriculados) {
+        this.codigoTurma = codigoTurma;
+        this.etapaDeEnsino = etapaDeEnsino;
+        this.ano = ano;
+        this.limiteVagas = limiteVagas;
+        this.numMatriculados = numMatriculados;
+    }
+
+    public String getCodigoTurma() {
+        return codigoTurma;
+    }
+
+    public void setCodigoTurma(String codigoTurma) {
+        this.codigoTurma = codigoTurma;
+    }
+
+    public String getEtapaDeEnsino() {
+        return etapaDeEnsino;
+    }
+
+    public void setEtapaDeEnsino(String etapaEnsino) {
+        this.etapaDeEnsino = etapaDeEnsino;
+    }
+
+    public int getAno() {
+        return ano;
+    }
+
+    public void setAno(int ano) {
+        this.ano = ano;
+    }
+
+    public int getLimiteVagas() {
+        return limiteVagas;
+    }
+
+    public void setLimiteVagas(int limiteVagas) {
+        this.limiteVagas = limiteVagas;
+    }
+
+    public int getNumMatriculados() {
+        return numMatriculados;
+    }
+
+    public void setNumMatriculados(int numMatriculados) {
+        this.numMatriculados = numMatriculados;
+    }
+}
+
+class Turma {
+    private String nomeTurma;
+    private String infantil;
+    private String fundamental; 
+    private String finais; 
+    private ListaDeAlunos alunos;
+
+    public Turma(String nomeTurma, String infantil, String fundamental, String finais) {
+        this.nomeTurma = nomeTurma;
+        this.infantil = infantil;
+        this.fundamental = fundamental;
+        this.finais = finais;
+    }
+
+    public Turma(String nomeTurma) {
+        this.nomeTurma = nomeTurma;
+        this.alunos = new ListaDeAlunos();
+    }
+
+    public void adicionarAluno(Aluno aluno) {
+        alunos.adicionarAluno(aluno);
+    }
+
+    public void mostrarAlunosEmOrdemAlfabetica() {
+        alunos.mostrarAlunosEmOrdemAlfabetica();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<CadastroTurma> turmas = new ArrayList<>();
+        ListaDeAlunos listaDeAlunos = new ListaDeAlunos();
+
+        while (true) {
+            System.out.println("\n===== Menu =====");
+            System.out.println("1. Cadastrar Aluno");
+            System.out.println("2. Consultar Alunos em Ordem Alfabética");
+            System.out.println("3. Cadastrar Turma");
+            System.out.println("4. Consultar Turmas");
+            System.out.println("0. Sair");
+            System.out.print("Escolha uma opção: ");
+
+            int opcao = scanner.nextInt();
+            scanner.nextLine();
+            switch (opcao) {
+                case 1:
+                    System.out.println("\n===== Cadastro de Aluno =====");
+                    System.out.print("Nome: ");
+                    String nome = scanner.nextLine();
+                    System.out.print("CPF: ");
+                    String cpf = scanner.nextLine();
+                    System.out.print("Endereço: ");
+                    String endereco = scanner.nextLine();
+                    System.out.print("Data de Nascimento (DD/MM/AAAA): ");
+                    String dataNascimento = scanner.nextLine();
+
+                    Aluno aluno = new Aluno(nome, cpf, endereco, dataNascimento);
+                    listaDeAlunos.adicionarAluno(aluno);
+                    System.out.println("Aluno cadastrado com sucesso!");
+                    break;
+
+                case 2:
+                    System.out.println("\n===== Alunos em Ordem Alfabética =====");
+                    listaDeAlunos.mostrarAlunosEmOrdemAlfabetica();
+                    break;
+
+                case 3:
+                    System.out.println("\n===== Cadastro de Turma =====");
+                    System.out.print("Digite o código da turma: ");
+                    String codigo = scanner.nextLine();
+                    System.out.print("Digite a etapa de ensino: ");
+                    String etapa = scanner.nextLine();
+                    System.out.print("Digite o ano: ");
+                    int ano = scanner.nextInt();
+                    System.out.print("Digite o limite de vagas: ");
+                    int limite = scanner.nextInt();
+                    System.out.print("Digite o número de matriculados: ");
+                    int matriculados = scanner.nextInt();
+                    turmas.add(new CadastroTurma(codigo, etapa, ano, limite, matriculados));
+                    System.out.println("Turma cadastrada com sucesso!");
+                    break;
+
+                case 4:
+                    System.out.println("\n===== Turmas Cadastradas =====");
+                    for (CadastroTurma turma : turmas) {
+                        System.out.println("Código: " + turma.getCodigoTurma() +
+                                           ", Etapa de Ensino: " + turma.getEtapaDeEnsino() +
+                                           ", Ano: " + turma.getAno() +
+                                           ", Limite de Vagas: " + turma.getLimiteVagas() +
+                                           ", Número de Matriculados: " + turma.getNumMatriculados());
+                    }
+                    break;
+
+                case 0:
+                    System.out.println("Saindo do Sistema...");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+            }
+        }
+    }
+}
